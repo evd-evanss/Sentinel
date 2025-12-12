@@ -5,7 +5,7 @@ on:
     types:
       - closed
     branches:
-      - main # ou a sua branch principal
+      - master
 
 jobs:
   update_changelog:
@@ -16,16 +16,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
         with:
-          # Precisamos de um token de acesso pessoal (PAT) para fazer push de volta
-          # para o repositório. O GITHUB_TOKEN padrão não tem permissão.
           token: ${{ secrets.PAT_FOR_CHANGELOG }}
 
       - name: Generate Changelog
         id: changelog
         uses: TriPSs/conventional-changelog-action@v3
         with:
-          # O token é necessário para buscar os detalhes do PR
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.PR_DETAILS_TOKEN }}
           # Define o tipo de saída para apenas o conteúdo, sem o cabeçalho da versão
           output-file: "false"
 
