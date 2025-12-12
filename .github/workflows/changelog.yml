@@ -1,0 +1,58 @@
+name: Update Changelog
+
+on:
+  pull_request:
+    types:
+      - closed
+    branches:
+      - main # ou a sua branch principal
+
+jobs:
+  update_changelog:
+    # Executa apenas se o PR foi 'merged'
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          # Precisamos de um token de acesso pessoal (PAT) para fazer push de volta
+          # para o repositório. O GITHUB_TOKEN padrão não tem permissão.
+          token: ${{ secrets.PAT_FOR_CHANGELOG }}
+
+      - name: Generate Changelog
+        id: changelog
+        uses: TriPSs/conventional-changelog-action@v3
+        with:
+          # O token é necessário para buscar os detalhes do PR
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          # Define o tipo de saída para apenas o conteúdo, sem o cabeçalho da versão
+          output-file: "false"
+
+      - name: Update CHANGELOG.md
+        run: |
+          # Lê o changelog gerado e formata em várias linhas
+          CHANGELOG_CONTENT=$(echo "${{ steps.changelog.outputs.changelog }}" | sed 's/\* /\n* /g')
+
+          # Usa awk para inserir o novo conteúdo após a linha [Unreleased]
+          awk -v content="$CHANGELOG_CONTENT" '
+            /## \[Unreleased\]/ {
+              print
+              print content
+              next
+            }
+            { print }
+          ' CHANGELOG.md > CHANGELOG.tmp && mv CHANGELOG.tmp CHANGELOG.md
+
+      - name: Commit and push changes
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add CHANGELOG.md
+          # Verifica se há algo para commitar
+          if ! git diff --staged --quiet; then
+            git commit -m "docs: Update CHANGELOG.md for recent changes"
+            git push
+          else
+            echo "No changes to commit."
+          fi

@@ -1,0 +1,62 @@
+<resources>
+    <string name="app_name">Sentinel</string>
+
+    <!-- Geral -->
+    <string name="status_secure">SEGURO</string>
+    <string name="status_risk_detected">RISCO DETECTADO</string>
+    <string name="cancel">Cancelar</string>
+    <string name="back">Voltar</string>
+
+    <!-- Idiomas -->
+    <string name="language_english">Inglês</string>
+    <string name="language_portuguese">Português</string>
+
+    <!-- Tela Principal -->
+    <string name="device_score">Pontuação de Segurança</string>
+    <string name="risk_level">Nível de Risco</string>
+    <string name="show_security_score">Exibir Pontuação de Segurança</string>
+
+    <!-- Resumos da Pontuação -->
+    <string name="risks_detected_summary">%d riscos detectados</string>
+    <string name="score_summary_secure">Nenhum risco significativo encontrado. Este dispositivo é considerado seguro.</string>
+    <string name="score_summary_warning">Alguns riscos foram detectados. Aconselha-se cautela.</string>
+    <string name="score_summary_danger">Múltiplos riscos críticos foram detectados. Este dispositivo não é confiável.</string>
+    <string name="detected_risks_title">Riscos Detectados</string>
+
+    <!-- Diálogo de Permissões -->
+    <string name="permission_required_title">Permissão Necessária</string>
+    <string name="permission_required_text">A localização é essencial para calcularmos o Device Score com precisão e detectar fraudes de GPS.</string>
+    <string name="open_settings">Abrir Configurações</string>
+
+    <!-- Títulos dos Indicadores -->
+    <string name="indicator_root_title">Acesso Root (Jailbreak)</string>
+    <string name="indicator_hooking_title">Frameworks de Hooking</string>
+    <string name="indicator_tampering_title">Adulteração do App</string>
+    <string name="indicator_masking_title">Mascaramento de Dispositivo</string>
+    <string name="indicator_emulator_title">Emulador</string>
+    <string name="indicator_virtual_os_title">SO Virtual (3rd party)</string>
+    <string name="indicator_cloned_apps_title">Clonagem de Apps</string>
+    <string name="indicator_suspicious_reset_title">Reset Suspeito</string>
+    <string name="indicator_gps_spoofing_title">GPS Spoofing</string>
+    <string name="indicator_autoclicker_title">Auto-Clicker</string>
+    <string name="indicator_screen_sharing_title">Compartilhamento de Tela</string>
+    <string name="indicator_debugging_title">Modo de Depuração</string>
+    <string name="indicator_vpn_title">VPN Ativa</string>
+    <string name="indicator_proxy_title">Proxy Ativo</string>
+
+    <!-- Descrições dos Indicadores -->
+    <string name="indicator_root_desc">O acesso root permite privilégios de administrador, quebrando o sandbox de segurança do Android. Isso permite que qualquer app malicioso acesse dados de outros apps, intercepte informações ou instale malwares no nível do sistema.</string>
+    <string name="indicator_hooking_desc">Frameworks como Xposed ou Frida permitem que um app modifique o comportamento de outro em tempo de execução. Isso é extremamente perigoso e usado para roubar senhas, desativar verificações de segurança e espionar a atividade do usuário.</string>
+    <string name="indicator_tampering_desc">Indica que o APK foi modificado após a sua publicação (ex: não foi instalado pela Play Store ou a assinatura não confere). Apps adulterados podem conter código malicioso injetado para fraudar transações ou roubar dados.</string>
+    <string name="indicator_masking_desc">Ocorre quando um emulador ou ambiente virtual tenta se passar por um dispositivo físico. É uma técnica comum usada em fazendas de fraude para escalar ataques, automatizando a criação de contas falsas e abusando de promoções.</string>
+    <string name="indicator_emulator_desc">O app está rodando em um ambiente emulado, não em um dispositivo físico. Embora útil para desenvolvimento, em produção é um forte indicador de automação e fraude, pois permite a criação de dispositivos virtuais em massa.</string>
+    <string name="indicator_virtual_os_desc">Detecta o uso de sistemas operacionais virtualizados de terceiros (ex: VMOS). Assim como emuladores, são usados para criar múltiplos ambientes isolados em um único dispositivo físico para escalar atividades fraudulentas.</string>
+    <string name="indicator_cloned_apps_desc">O app está rodando em um ambiente de clonagem (ex: Parallel Space). Isso permite que um usuário tenha múltiplas instâncias do mesmo app, o que pode ser usado para abusar de sistemas de referência, promoções ou realizar fraudes com múltiplas identidades.</string>
+    <string name="indicator_suspicious_reset_desc">O app foi instalado há pouquíssimo tempo (ex: &lt; 60 segundos atrás). É um comportamento típico de ambientes de fraude automatizados, onde dispositivos são resetados e o app é reinstalado para cada novo ataque ou criação de conta.</string>
+    <string name="indicator_gps_spoofing_desc">O usuário está usando um app para falsificar sua localização GPS. Isso pode ser usado para burlar restrições geográficas, abusar de promoções locais ou cometer fraudes em serviços que dependem da localização.</string>
+    <string name="indicator_autoclicker_desc">Um serviço de acessibilidade está rodando para simular toques na tela. É usado para automatizar tarefas em jogos, mas também para fraudes de cliques em anúncios ou para obter vantagens indevidas em apps.</string>
+    <string name="indicator_screen_sharing_desc">A tela do dispositivo está sendo espelhada ou transmitida. Isso pode representar um risco de segurança, pois um terceiro pode estar visualizando informações sensíveis, como senhas e dados financeiros, em tempo real.</string>
+    <string name="indicator_debugging_desc">O modo de depuração USB (ADB) está ativo. Embora normal durante o desenvolvimento, em um ambiente de produção pode ser uma vulnerabilidade, permitindo que um computador conectado extraia dados do dispositivo.</string>
+    <string name="indicator_vpn_desc">O tráfego de rede está sendo roteado através de uma VPN. Isso mascara o endereço de IP real do usuário, o que pode ser usado para contornar restrições regionais ou ocultar a origem de atividades maliciosas.</string>
+    <string name="indicator_proxy_desc">O dispositivo está configurado para usar um proxy de rede. Semelhante a uma VPN, um proxy pode ser usado para ocultar a identidade e a localização real do usuário, facilitando atividades fraudulentas.</string>
+</resources>

@@ -1,0 +1,62 @@
+<resources>
+    <string name="app_name">Sentinel</string>
+
+    <!-- General -->
+    <string name="status_secure">SECURE</string>
+    <string name="status_risk_detected">RISK DETECTED</string>
+    <string name="cancel">Cancel</string>
+    <string name="back">Back</string>
+
+    <!-- Languages -->
+    <string name="language_english">English</string>
+    <string name="language_portuguese">Portuguese</string>
+
+    <!-- Main Screen -->
+    <string name="device_score">Security Score</string>
+    <string name="risk_level">Risk Level</string>
+    <string name="show_security_score">Show Security Score</string>
+
+    <!-- Score Summaries -->
+    <string name="risks_detected_summary">%d risks detected</string>
+    <string name="score_summary_secure">No significant risks found. This device is considered secure.</string>
+    <string name="score_summary_warning">Some risks have been detected. Caution is advised.</string>
+    <string name="score_summary_danger">Multiple critical risks were detected. This device is not trustworthy.</string>
+    <string name="detected_risks_title">Detected Risks</string>
+
+    <!-- Permissions Dialog -->
+    <string name="permission_required_title">Permission Required</string>
+    <string name="permission_required_text">Location is essential to accurately calculate the Device Score and detect GPS fraud.</string>
+    <string name="open_settings">Open Settings</string>
+
+    <!-- Indicator Titles -->
+    <string name="indicator_root_title">Root Access (Jailbreak)</string>
+    <string name="indicator_hooking_title">Hooking Frameworks</string>
+    <string name="indicator_tampering_title">App Tampering</string>
+    <string name="indicator_masking_title">Device Masking</string>
+    <string name="indicator_emulator_title">Emulator</string>
+    <string name="indicator_virtual_os_title">Virtual OS (3rd party)</string>
+    <string name="indicator_cloned_apps_title">App Cloning</string>
+    <string name="indicator_suspicious_reset_title">Suspicious Reset</string>
+    <string name="indicator_gps_spoofing_title">GPS Spoofing</string>
+    <string name="indicator_autoclicker_title">Auto-Clicker</string>
+    <string name="indicator_screen_sharing_title">Screen Sharing</string>
+    <string name="indicator_debugging_title">Debugging Mode</string>
+    <string name="indicator_vpn_title">Active VPN</string>
+    <string name="indicator_proxy_title">Active Proxy</string>
+
+    <!-- Indicator Descriptions -->
+    <string name="indicator_root_desc">Root access allows administrator privileges, breaking the Android security sandbox. This enables malicious apps to access data from other apps, intercept information, or install system-level malware.</string>
+    <string name="indicator_hooking_desc">Frameworks like Xposed or Frida allow an app to modify the behavior of another at runtime. This is extremely dangerous and used to steal passwords, disable security checks, and spy on user activity.</string>
+    <string name="indicator_tampering_desc">Indicates that the APK was modified after its publication (e.g., not installed from the Play Store or the signature does not match). Tampered apps may contain injected malicious code to commit fraud or steal data.</string>
+    <string name="indicator_masking_desc">Occurs when an emulator or virtual environment tries to impersonate a physical device. It is a common technique used in fraud farms to scale attacks, automating the creation of fake accounts and abusing promotions.</string>
+    <string name="indicator_emulator_desc">The app is running in an emulated environment, not on a physical device. While useful for development, in production, it is a strong indicator of automation and fraud, as it allows for the mass creation of virtual devices.</string>
+    <string name="indicator_virtual_os_desc">Detects the use of third-party virtualized operating systems (e.g., VMOS). Like emulators, they are used to create multiple isolated environments on a single physical device to scale fraudulent activities.</string>
+    <string name="indicator_cloned_apps_desc">The app is running in a cloning environment (e.g., Parallel Space). This allows a user to have multiple instances of the same app, which can be used to abuse referral systems, promotions, or commit fraud with multiple identities.</string>
+    <string name="indicator_suspicious_reset_desc">The app was installed very recently (e.g., &lt; 60 seconds ago). This is typical behavior in automated fraud environments, where devices are reset and the app is reinstalled for each new attack or account creation.</string>
+    <string name="indicator_gps_spoofing_desc">The user is using an app to fake their GPS location. This can be used to bypass geographic restrictions, abuse local promotions, or commit fraud in location-dependent services.</string>
+    <string name="indicator_autoclicker_desc">An accessibility service is running to simulate screen taps. It is used to automate tasks in games but also for ad click fraud or to gain undue advantages in apps.</string>
+    <string name="indicator_screen_sharing_desc">The device\'s screen is being mirrored or broadcast. This can pose a security risk, as a third party could be viewing sensitive information, such as passwords and financial data, in real time.</string>
+    <string name="indicator_debugging_desc">USB debugging mode (ADB) is active. While normal during development, in a production environment, it can be a vulnerability, allowing a connected computer to extract data from the device.</string>
+    <string name="indicator_vpn_desc">Network traffic is being routed through a VPN. This masks the user\'s real IP address, which can be used to bypass regional restrictions or hide the origin of malicious activities.</string>
+    <string name="indicator_proxy_desc">The device is configured to use a network proxy. Similar to a VPN, a proxy can be used to hide the user\'s identity and real location, facilitating fraudulent activities.</string>
+</resources>
