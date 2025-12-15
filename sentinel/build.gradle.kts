@@ -12,14 +12,11 @@ android {
         minSdk = 24
     }
 
-    task<Jar>("javadocJar") {
-        archiveClassifier.set("javadoc")
-        from(tasks.create("emptyJavadoc", Javadoc::class))
-    }
-
-    task<Jar>("sourcesJar") {
-        archiveClassifier.set("sources")
-        from(android.sourceSets.getByName("main").java.srcDirs)
+    publishing {
+        singleVariant("release") {
+            withSourcesJar()
+            withJavadocJar()
+        }
     }
 
     buildTypes {
@@ -50,14 +47,11 @@ afterEvaluate {
     publishing {
         publications {
             create<MavenPublication>("release") {
-                groupId = "com.github.evd-evanss"
-                artifactId = "sentinel"
-                version = "1.0.0"
-
                 from(components["release"])
 
-                artifact(tasks["sourcesJar"])
-                artifact(tasks["javadocJar"])
+                groupId = "com.github.evd-evanss"
+                artifactId = "sentinel"
+                version = "1.0.1"
             }
         }
     }
