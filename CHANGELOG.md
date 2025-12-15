@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+# [0.3.0](https://github.com/evd-evanss/Sentinel/compare/v0.2.0...v0.3.0) (2025-12-15)
+
+
+### Features
+
+
+* Configura o maven para publicar os artefatos ([026cd6b](https://github.com/evd-evanss/Sentinel/commit/026cd6b2c7d31f2ea7d3e50e5fdd32eea21e73d8))
 # [0.2.0](https://github.com/evd-evanss/Sentinel/compare/v0.1.0...v0.2.0) (2025-12-15)
 
 
