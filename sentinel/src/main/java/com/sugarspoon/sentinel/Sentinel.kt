@@ -44,7 +44,7 @@ object Sentinel {
     private const val TAG = "Sentinel"
     private val scope = CoroutineScope(Dispatchers.Default)
     private var isInitialized = false
-    private var enableDebugLogs = false
+    private var enableLogs = false
 
     private val _detectionResult = MutableStateFlow(DetectionResult())
     val detectionResult = _detectionResult.asStateFlow()
@@ -52,9 +52,9 @@ object Sentinel {
     fun initialize(
         context: Context,
         environment: Environment = Environment.PROD,
-        enableDebugLogs: Boolean = false,
+        enableLogs: Boolean = false,
     ) {
-        this.enableDebugLogs = enableDebugLogs
+        this.enableLogs = enableLogs
 
         if (isInitialized) {
             Log.w(TAG, "Sentinel is already initialized.")
@@ -88,7 +88,7 @@ object Sentinel {
     }
 
     private fun log(message: String) {
-        if (environment.name == Environment.STAGE.name && enableDebugLogs.or(false)) {
+        if (environment.name == Environment.STAGE.name && enableLogs.or(false)) {
             Log.d(TAG, message)
         }
     }
@@ -209,7 +209,6 @@ object Sentinel {
         }
     }
 
-    // ... (O resto das suas funções check continuam aqui, sem alterações)
     private fun checkRoot(): Boolean {
         val paths = arrayOf(
             "/system/app/Superuser.apk", "/sbin/su", "/system/bin/su", "/system/xbin/su",
@@ -232,16 +231,16 @@ object Sentinel {
         val isEmulator = (
                 Build.FINGERPRINT.startsWith("generic")
                         || Build.FINGERPRINT.startsWith("unknown")
-                        || Build.FINGERPRINT.contains("emulator") // Check for the word 'emulator'
-                        || Build.FINGERPRINT.contains("sdk") // Check for 'sdk' in fingerprint
+                        || Build.FINGERPRINT.contains("emulator")
+                        || Build.FINGERPRINT.contains("sdk")
                         || Build.MODEL.contains("google_sdk")
                         || Build.MODEL.contains("Emulator")
                         || Build.MODEL.contains("Android SDK built for x86")
                         || Build.MANUFACTURER.contains("Genymotion")
                         || (Build.BRAND.startsWith("generic") && Build.DEVICE.startsWith("generic"))
                         || "google_sdk" == Build.PRODUCT
-                        || Build.HARDWARE.contains("goldfish") // Emulator-specific hardware
-                        || Build.HARDWARE.contains("ranchu") // Another emulator-specific hardware
+                        || Build.HARDWARE.contains("goldfish")
+                        || Build.HARDWARE.contains("ranchu")
                 )
         log("checkEmulator: $isEmulator")
         return isEmulator
@@ -362,7 +361,6 @@ object Sentinel {
                 isInstallerTampered = true
             }
 
-            // Check 2: Signature verification
             val originalSignature = ""
 
             val signatures = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {

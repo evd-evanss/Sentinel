@@ -1,14 +1,12 @@
-import java.util.Properties
 import java.io.FileInputStream
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-    alias(libs.plugins.google.gms.google.services)
 }
 
-// Carrega as propriedades do arquivo local.properties
 val localProperties = Properties()
 val localPropertiesFile = rootProject.file("local.properties")
 if (localPropertiesFile.exists()) {
@@ -28,8 +26,6 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        // Injeta o DSN do Sentry no Manifesto
-        // O valor é lido do local.properties ou usa uma string vazia como fallback
         manifestPlaceholders["sentryDsn"] = localProperties.getProperty("sentry.dsn", "")
     }
 
@@ -56,12 +52,6 @@ android {
 
 dependencies {
     implementation(project(":sentinel"))
-
-    // Firebase
-    implementation(platform(libs.firebase.bom))
-    implementation(libs.firebase.analytics)
-
-    // Sentry
     implementation(libs.sentry.android)
 
     implementation(libs.androidx.core.ktx)

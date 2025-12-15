@@ -1,0 +1,4 @@
+jdk:
+  - openjdk17
+install:
+  - ./gradlew clean :sentinel:assembleRelease :sentinel:publishToMavenLocal

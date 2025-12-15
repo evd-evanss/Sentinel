@@ -72,8 +72,8 @@ fun IndicatorDetailScreen(
 private fun RiskLevel.toColor(): Color {
     return when (this) {
         RiskLevel.CRITICAL -> Color.Red
-        RiskLevel.HIGH -> Color(0xFFFF8000) // Laranja
-        RiskLevel.MEDIUM -> Color(0xFFFFC107) // Amarelo/Âmbar
+        RiskLevel.HIGH -> Color(0xFFFF8000)
+        RiskLevel.MEDIUM -> Color(0xFFFFC107)
         RiskLevel.LOW -> Color.Yellow
         RiskLevel.NONE -> Color.Green
     }

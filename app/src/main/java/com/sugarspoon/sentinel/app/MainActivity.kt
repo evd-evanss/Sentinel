@@ -1,6 +1,5 @@
 package com.sugarspoon.sentinel.app
 
-import android.graphics.Color as AndroidColor
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
@@ -13,6 +12,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Modifier
 import com.sugarspoon.sentinel.app.ui.AppNavigator
 import com.sugarspoon.sentinel.ui.theme.SentinelTheme
+import android.graphics.Color as AndroidColor
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
