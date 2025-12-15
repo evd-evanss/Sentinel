@@ -64,7 +64,7 @@ fun DeviceScoreDisplay(result: DetectionResult, allIndicators: List<IndicatorInf
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
-            .verticalScroll(rememberScrollState()) // <-- CORREÇÃO APLICADA AQUI
+            .verticalScroll(rememberScrollState())
     ) {
         Text(
             text = stringResource(id = R.string.device_score),

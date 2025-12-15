@@ -12,5 +12,10 @@
 /captures
 .externalNativeBuild
 .cxx
+
+# Oculta o arquivo de segredos do Firebase
+google-services.json
+
+# Mantém o local.properties ignorado
 local.properties
 /.idea/vcs.xml
