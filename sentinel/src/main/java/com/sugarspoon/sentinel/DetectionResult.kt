@@ -1,8 +1,5 @@
 package com.sugarspoon.sentinel
 
-/**
- * Armazena os resultados das verificações de segurança.
- */
 data class DetectionResult(
     // --- DEVICE STATUS ---
     val isDebuggingEnabled: Boolean = false,
@@ -29,5 +26,6 @@ data class DetectionResult(
     val longitude: Double? = null,
 
     // --- OVERALL SCORE ---
-    val deviceScore: Int = 100
+    val deviceScore: Int = 100,
+    val userId: String? = null,
 )
