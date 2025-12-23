@@ -34,7 +34,6 @@ interface FraudMetricListener {
     fun onMetricsGenerated(result: DetectionResult, deviceId: String?)
 }
 
-@SuppressLint("StaticFieldLeak")
 object Sentinel {
 
     private lateinit var context: Context
@@ -45,6 +44,7 @@ object Sentinel {
     private val scope = CoroutineScope(Dispatchers.Default)
     private var isInitialized = false
     private var enableLogs = false
+    private var userId: String? = null
 
     private val _detectionResult = MutableStateFlow(DetectionResult())
     val detectionResult = _detectionResult.asStateFlow()
@@ -68,6 +68,11 @@ object Sentinel {
             startMonitoring()
             isInitialized = true
         }
+    }
+
+    fun setUserId(userId: String) {
+        this.userId = userId
+        log("userId: ${Sentinel.userId}")
     }
 
     fun setListener(listener: FraudMetricListener) {
@@ -129,7 +134,8 @@ object Sentinel {
             isVirtualOS = checkVirtualOS(),
             isSuspiciousReset = checkSuspiciousReset(),
             latitude = location?.first,
-            longitude = location?.second
+            longitude = location?.second,
+            userId = userId
         )
         
         val finalResult = rawResult.copy(deviceScore = calculateDeviceScore(rawResult))
