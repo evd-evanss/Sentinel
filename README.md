@@ -13,8 +13,7 @@ O SDK monitora continuamente uma variedade de sinais, incluindo:
   - Uso de Proxy
   - Mascaramento de Dispositivo (Device Masking)
 
-- **Adulteração e Hooks (Tampering & Hooks)**:
-  - Adulteração do App (App Tampering)
+- **Hooks (Hooks)**:
   - Frameworks de Hooking (ex: Xposed, Frida)
 
 - **Apps e Comportamentos Suspeitos**:
@@ -28,13 +27,25 @@ O SDK monitora continuamente uma variedade de sinais, incluindo:
 
 ## Como Usar
 
-### 1. Adicionar a Dependência
+### 1. Dependências
 
-Adicione o módulo `:sentinel` como uma dependência no arquivo `build.gradle.kts` do seu módulo `:app`:
+Adicione-o ao final da seção `repositories` no arquivo `settings.gradle` da raiz do seu projeto:
+
+```kotlin
+dependencyResolutionManagement {
+  repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+  repositories {
+    mavenCentral()
+    maven { url 'https://jitpack.io' }
+  }
+}
+```
+
+Adicione a dependência ao seu arquivo `build.gradle.kts` nivel modulo/app:
 
 ```kotlin
 dependencies {
-    implementation(project(":sentinel"))
+    implementation(project("com.github.evd-evanss:Sentinel:<last_version>"))
 }
 ```
 
