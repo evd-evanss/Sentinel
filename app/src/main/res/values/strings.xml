@@ -31,7 +31,6 @@
     <!-- Indicator Titles -->
     <string name="indicator_root_title">Root Access (Jailbreak)</string>
     <string name="indicator_hooking_title">Hooking Frameworks</string>
-    <string name="indicator_tampering_title">App Tampering</string>
     <string name="indicator_masking_title">Device Masking</string>
     <string name="indicator_emulator_title">Emulator</string>
     <string name="indicator_virtual_os_title">Virtual OS (3rd party)</string>

@@ -8,8 +8,7 @@ data class DetectionResult(
     val isProxyEnabled: Boolean = false,
     val isDeviceMasked: Boolean = false,
 
-    // --- TAMPERING & HOOKS ---
-    val isAppTampered: Boolean = false,
+    // --- HOOKS ---
     val isHookingDetected: Boolean = false,
 
     // --- SUSPICIOUS APPS & BEHAVIOR ---

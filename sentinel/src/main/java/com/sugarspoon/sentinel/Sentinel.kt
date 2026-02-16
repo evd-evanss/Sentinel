@@ -2,7 +2,6 @@ package com.sugarspoon.sentinel
 
 import android.Manifest
 import android.accessibilityservice.AccessibilityServiceInfo
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import android.hardware.display.DisplayManager
@@ -27,25 +26,16 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import java.io.File
 import kotlin.coroutines.resume
 
-/**
- * Interface para receber os resultados de detecção de fraude.
- */
-interface FraudMetricListener {
-    fun onMetricsGenerated(result: DetectionResult, deviceId: String?)
-}
-
+@Suppress("StaticFieldLeak")
 object Sentinel {
 
     private lateinit var context: Context
     private lateinit var environment: Environment
     private var listener: FraudMetricListener? = null
-
     private const val TAG = "Sentinel"
     private val scope = CoroutineScope(Dispatchers.Default)
-    private var isInitialized = false
     private var enableLogs = false
     private var userId: String? = null
-
     private val _detectionResult = MutableStateFlow(DetectionResult())
     val detectionResult = _detectionResult.asStateFlow()
 
@@ -55,19 +45,10 @@ object Sentinel {
         enableLogs: Boolean = false,
     ) {
         this.enableLogs = enableLogs
-
-        if (isInitialized) {
-            Log.w(TAG, "Sentinel is already initialized.")
-            return
-        }
-
-        synchronized(this) {
-            if(isInitialized) return
-            this.context = context.applicationContext
-            this.environment = environment
-            startMonitoring()
-            isInitialized = true
-        }
+        this.context = context.applicationContext
+        this.environment = environment
+        log("Sentinel is already initialized...")
+        startMonitoring()
     }
 
     fun setUserId(userId: String) {
@@ -84,9 +65,9 @@ object Sentinel {
         scope.launch {
             while (true) {
                 val result = runAllChecks()
-                _detectionResult.value = result
                 val deviceId = Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID)
                 listener?.onMetricsGenerated(result, deviceId)
+                _detectionResult.value = result
                 delay(intervalMillis)
             }
         }
@@ -99,9 +80,6 @@ object Sentinel {
     }
 
     private suspend fun runAllChecks(): DetectionResult {
-        if (!isInitialized) {
-            throw IllegalStateException("Sentinel must be initialized before use.")
-        }
         log("---- Running detection cycle ----")
         val hasFineLocation = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
         val hasCoarseLocation = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
@@ -124,7 +102,6 @@ object Sentinel {
             isRooted = checkRoot(),
             isProxyEnabled = checkProxy(),
             isDeviceMasked = checkDeviceMasking(),
-            isAppTampered = checkAppTampering(),
             isHookingDetected = checkHooking(),
             isAutoClickerDetected = checkAutoClicker(),
             isAppCloned = checkAppCloning(),
@@ -147,7 +124,6 @@ object Sentinel {
         var score = 100
         if (result.isRooted) score -= 20
         if (result.isHookingDetected) score -= 20
-        if (result.isAppTampered) score -= 20
         if (result.isDeviceMasked) score -= 15
         if (result.isEmulated) score -= 15
         if (result.isVirtualOS) score -= 15
@@ -344,55 +320,6 @@ object Sentinel {
 
         log("checkDeviceMasking: $isMasked")
         return isMasked
-    }
-
-    private fun checkAppTampering(): Boolean {
-        var isSignatureTampered = false
-        var isInstallerTampered = false
-
-        try {
-            val packageName = context.packageName
-            val packageManager = context.packageManager
-
-            // Check 1: Installer verification (using modern API)
-            val installer = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                packageManager.getInstallSourceInfo(packageName).installingPackageName
-            } else {
-                @Suppress("DEPRECATION")
-                packageManager.getInstallerPackageName(packageName)
-            }
-
-            if ("com.android.vending" != installer) {
-                log("App tampering: App not installed from Play Store. Installer: $installer")
-                isInstallerTampered = true
-            }
-
-            val originalSignature = ""
-
-            val signatures = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                val signingInfo = packageManager.getPackageInfo(packageName, PackageManager.GET_SIGNING_CERTIFICATES).signingInfo
-                signingInfo?.apkContentsSigners
-            } else {
-                @Suppress("DEPRECATION")
-                packageManager.getPackageInfo(packageName, PackageManager.GET_SIGNATURES).signatures
-            }
-
-            if (signatures.isNullOrEmpty()) {
-                log("App tampering: No signatures found.")
-                isSignatureTampered = true
-            } else {
-                isSignatureTampered = signatures.none { it.toCharsString() == originalSignature }
-                if (isSignatureTampered) log("App tampering: Signature mismatch.")
-            }
-
-        } catch (e: Exception) {
-            log("checkAppTampering error: ${e.message}")
-            return true
-        }
-
-        val isTampered = isSignatureTampered || isInstallerTampered
-        log("checkAppTampering: $isTampered (Signature: $isSignatureTampered, Installer: $isInstallerTampered)")
-        return isTampered
     }
 
     private fun checkHooking(): Boolean {

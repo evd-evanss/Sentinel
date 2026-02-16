@@ -53,7 +53,6 @@ class SentinelApplication : Application(), FraudMetricListener {
         event.setTag("is_rooted", true.toString())
         extras["is_proxy_enabled"] = result.isProxyEnabled
         extras["is_device_masked"] = result.isDeviceMasked
-        extras["is_app_tampered"] = result.isAppTampered
         extras["is_hooking_detected"] = result.isHookingDetected
         extras["is_auto_clicker_detected"] = result.isAutoClickerDetected
         extras["is_app_cloned"] = result.isAppCloned

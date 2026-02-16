@@ -33,13 +33,6 @@ fun mapResultsToInfo(result: DetectionResult): List<IndicatorInfo> {
             description = R.string.indicator_hooking_desc
         ),
         IndicatorInfo(
-            id = "isAppTampered",
-            title = R.string.indicator_tampering_title,
-            isDetected = result.isAppTampered,
-            riskLevel = RiskLevel.CRITICAL,
-            description = R.string.indicator_tampering_desc
-        ),
-        IndicatorInfo(
             id = "isDeviceMasked",
             title = R.string.indicator_masking_title,
             isDetected = result.isDeviceMasked,
