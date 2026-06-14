@@ -26,5 +26,7 @@ data class DetectionResult(
 
     // --- OVERALL SCORE ---
     val deviceScore: Int = 100,
+    val deviceRiskLevel: DeviceRiskLevel = DeviceRiskLevel.LOW,
+    val scoreReasons: List<DeviceScoreReason> = emptyList(),
     val userId: String? = null,
 )

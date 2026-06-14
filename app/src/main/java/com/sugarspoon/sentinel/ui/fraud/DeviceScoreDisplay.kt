@@ -33,21 +33,24 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sugarspoon.sentinel.DetectionResult
+import com.sugarspoon.sentinel.DeviceRiskLevel
+import com.sugarspoon.sentinel.DeviceScoreReason
+import com.sugarspoon.sentinel.SentinelIndicator
 import com.sugarspoon.sentinel.app.R
 
 @Composable
 fun DeviceScoreDisplay(result: DetectionResult, allIndicators: List<IndicatorInfo>) {
     val score = result.deviceScore
-    val scoreColor = when {
-        score > 75 -> Color.Green
-        score > 40 -> Color(0xFFFFC107) // Âmbar
-        else -> Color.Red
+    val scoreColor = when (result.deviceRiskLevel) {
+        DeviceRiskLevel.LOW -> Color.Green
+        DeviceRiskLevel.MEDIUM -> Color(0xFFFFC107) // Âmbar
+        DeviceRiskLevel.HIGH -> Color.Red
     }
 
-    val summaryTextRes = when {
-        score > 75 -> R.string.score_summary_secure
-        score > 40 -> R.string.score_summary_warning
-        else -> R.string.score_summary_danger
+    val summaryTextRes = when (result.deviceRiskLevel) {
+        DeviceRiskLevel.LOW -> R.string.score_summary_secure
+        DeviceRiskLevel.MEDIUM -> R.string.score_summary_warning
+        DeviceRiskLevel.HIGH -> R.string.score_summary_danger
     }
 
     val detectedRisks = allIndicators.filter { it.isDetected }
@@ -105,7 +108,7 @@ fun DeviceScoreDisplay(result: DetectionResult, allIndicators: List<IndicatorInf
         Spacer(modifier = Modifier.height(24.dp))
 
         Icon(
-            imageVector = if (score > 40) Icons.Default.CheckCircle else Icons.Default.Warning,
+            imageVector = if (result.deviceRiskLevel == DeviceRiskLevel.HIGH) Icons.Default.Warning else Icons.Default.CheckCircle,
             contentDescription = null,
             tint = scoreColor,
             modifier = Modifier.size(32.dp)
@@ -127,6 +130,12 @@ fun DeviceScoreDisplay(result: DetectionResult, allIndicators: List<IndicatorInf
             color = Color.LightGray,
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(horizontal = 16.dp)
+        )
+
+        Spacer(modifier = Modifier.height(24.dp))
+        ScoreDebugDetails(
+            result = result,
+            scoreColor = scoreColor
         )
 
         if (detectedRisks.isNotEmpty()) {
@@ -168,5 +177,125 @@ fun DeviceScoreDisplay(result: DetectionResult, allIndicators: List<IndicatorInf
                 Divider(color = Color.DarkGray, thickness = 0.5.dp)
             }
         }
+    }
+}
+
+@Composable
+private fun ScoreDebugDetails(
+    result: DetectionResult,
+    scoreColor: Color,
+) {
+    Column(
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Text(
+            text = stringResource(id = R.string.score_debug_title),
+            color = Color.White,
+            fontWeight = FontWeight.Bold,
+            fontSize = 16.sp
+        )
+        Spacer(modifier = Modifier.height(12.dp))
+        ScoreParameterRow(
+            name = "deviceScore",
+            value = result.deviceScore.toString(),
+            valueColor = scoreColor
+        )
+        ScoreParameterRow(
+            name = "deviceRiskLevel",
+            value = result.deviceRiskLevel.name,
+            valueColor = scoreColor
+        )
+        Spacer(modifier = Modifier.height(12.dp))
+        Text(
+            text = "scoreReasons",
+            color = Color.White,
+            fontFamily = FontFamily.Monospace,
+            fontWeight = FontWeight.SemiBold,
+            fontSize = 14.sp
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        if (result.scoreReasons.isEmpty()) {
+            Text(
+                text = stringResource(id = R.string.score_reasons_empty),
+                color = Color.Gray,
+                fontSize = 14.sp,
+                fontFamily = FontFamily.Monospace
+            )
+        } else {
+            result.scoreReasons.forEach { reason ->
+                ScoreReasonRow(reason = reason)
+            }
+        }
+    }
+}
+
+@Composable
+private fun ScoreParameterRow(
+    name: String,
+    value: String,
+    valueColor: Color,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = "$name:",
+            color = Color.Gray,
+            fontFamily = FontFamily.Monospace,
+            fontSize = 14.sp,
+            modifier = Modifier.weight(1f)
+        )
+        Text(
+            text = value,
+            color = valueColor,
+            fontFamily = FontFamily.Monospace,
+            fontWeight = FontWeight.Bold,
+            fontSize = 14.sp
+        )
+    }
+}
+
+@Composable
+private fun ScoreReasonRow(reason: DeviceScoreReason) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = stringResource(id = reason.indicator.titleRes()),
+            color = Color.LightGray,
+            fontSize = 14.sp,
+            modifier = Modifier.weight(1f)
+        )
+        Text(
+            text = "-${reason.penalty}",
+            color = Color.Red,
+            fontFamily = FontFamily.Monospace,
+            fontWeight = FontWeight.Bold,
+            fontSize = 14.sp
+        )
+    }
+}
+
+private fun SentinelIndicator.titleRes(): Int {
+    return when (this) {
+        SentinelIndicator.ROOT -> R.string.indicator_root_title
+        SentinelIndicator.HOOKING -> R.string.indicator_hooking_title
+        SentinelIndicator.DEVICE_MASKING -> R.string.indicator_masking_title
+        SentinelIndicator.EMULATOR -> R.string.indicator_emulator_title
+        SentinelIndicator.VIRTUAL_OS -> R.string.indicator_virtual_os_title
+        SentinelIndicator.APP_CLONING -> R.string.indicator_cloned_apps_title
+        SentinelIndicator.SUSPICIOUS_RESET -> R.string.indicator_suspicious_reset_title
+        SentinelIndicator.GPS_SPOOFING -> R.string.indicator_gps_spoofing_title
+        SentinelIndicator.AUTO_CLICKER -> R.string.indicator_autoclicker_title
+        SentinelIndicator.SCREEN_SHARING -> R.string.indicator_screen_sharing_title
+        SentinelIndicator.DEBUGGING -> R.string.indicator_debugging_title
+        SentinelIndicator.VPN -> R.string.indicator_vpn_title
+        SentinelIndicator.PROXY -> R.string.indicator_proxy_title
     }
 }

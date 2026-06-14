@@ -22,6 +22,8 @@
     <string name="score_summary_warning">Alguns riscos foram detectados. Aconselha-se cautela.</string>
     <string name="score_summary_danger">Múltiplos riscos críticos foram detectados. Este dispositivo não é confiável.</string>
     <string name="detected_risks_title">Riscos Detectados</string>
+    <string name="score_debug_title">Parâmetros do Score</string>
+    <string name="score_reasons_empty">nenhum</string>
 
     <!-- Diálogo de Permissões -->
     <string name="permission_required_title">Permissão Necessária</string>

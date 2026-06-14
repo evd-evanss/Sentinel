@@ -22,6 +22,8 @@
     <string name="score_summary_warning">Some risks have been detected. Caution is advised.</string>
     <string name="score_summary_danger">Multiple critical risks were detected. This device is not trustworthy.</string>
     <string name="detected_risks_title">Detected Risks</string>
+    <string name="score_debug_title">Score Parameters</string>
+    <string name="score_reasons_empty">none</string>
 
     <!-- Permissions Dialog -->
     <string name="permission_required_title">Permission Required</string>

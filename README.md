@@ -33,13 +33,13 @@ O SDK monitora continuamente uma variedade de sinais, incluindo:
 
 O **Device Score** é uma pontuação de confiança do dispositivo calculada a cada ciclo de monitoramento. O valor começa em `100` e cada sinal de risco detectado reduz a pontuação conforme sua severidade. O resultado final nunca fica abaixo de `0`.
 
-Use o score como uma leitura consolidada de risco:
+Use o score e o `deviceRiskLevel` como uma leitura consolidada de risco:
 
 | Score | Interpretação sugerida |
 | --- | --- |
-| `76 - 100` | Dispositivo com baixo risco aparente |
-| `41 - 75` | Dispositivo com sinais de atenção |
-| `0 - 40` | Dispositivo com alto risco |
+| `76 - 100` | `DeviceRiskLevel.LOW`: dispositivo com baixo risco aparente |
+| `41 - 75` | `DeviceRiskLevel.MEDIUM`: dispositivo com sinais de atenção |
+| `0 - 40` | `DeviceRiskLevel.HIGH`: dispositivo com alto risco |
 
 ### Pesos atuais
 
@@ -60,6 +60,11 @@ Use o score como uma leitura consolidada de risco:
 | Proxy configurado | `-5` |
 
 Exemplo: um dispositivo com root (`-20`), VPN ativa (`-5`) e debugging habilitado (`-5`) terá `deviceScore = 70`.
+
+Além do valor numérico, o resultado inclui:
+
+- `deviceRiskLevel`: nível de risco já classificado pelo SDK.
+- `scoreReasons`: lista dos indicadores que reduziram a pontuação e a penalidade aplicada.
 
 > O Device Score é uma heurística de risco. Evite bloquear usuários apenas por um único sinal leve; prefira combinar o score com contexto de negócio, autenticação, histórico do usuário e observabilidade.
 
@@ -97,8 +102,10 @@ Na classe `Application` do seu app, chame o método `Sentinel.initialize()` dent
 **Exemplo (`YourApplication.kt`):**
 
 ```kotlin
+import com.sugarspoon.sentinel.DeviceScoreWeights
 import com.sugarspoon.sentinel.Sentinel
 import com.sugarspoon.sentinel.Environment
+import com.sugarspoon.sentinel.SentinelConfig
 
 class YourApplication : Application() {
     override fun onCreate() {
@@ -108,6 +115,21 @@ class YourApplication : Application() {
         Sentinel.initialize(this, Environment.STAGE)
     }
 }
+```
+
+Também é possível customizar os pesos do Device Score:
+
+```kotlin
+Sentinel.initialize(
+    context = this,
+    environment = Environment.STAGE,
+    config = SentinelConfig(
+        scoreWeights = DeviceScoreWeights(
+            rooted = 30,
+            vpnActive = 0
+        )
+    )
+)
 ```
 
 Não se esqueça de registrar a sua classe `Application` no `AndroidManifest.xml`:
@@ -147,19 +169,29 @@ fun YourScreen() {
 O `deviceScore` faz parte de `DetectionResult` e pode ser usado para ajustar a experiência do usuário, exigir uma etapa extra de validação ou enviar métricas para sua stack de observabilidade.
 
 ```kotlin
+import com.sugarspoon.sentinel.DeviceRiskLevel
+
 val result by Sentinel.detectionResult.collectAsState()
 
-when {
-    result.deviceScore <= 40 -> {
+when (result.deviceRiskLevel) {
+    DeviceRiskLevel.HIGH -> {
         // Alto risco: reforce autenticação, limite operações sensíveis
         // ou envie o evento para análise.
     }
-    result.deviceScore <= 75 -> {
+    DeviceRiskLevel.MEDIUM -> {
         // Atenção: monitore e aplique validações adicionais se necessário.
     }
-    else -> {
+    DeviceRiskLevel.LOW -> {
         // Baixo risco aparente.
     }
+}
+```
+
+Para explicar por que o score caiu, leia `scoreReasons`:
+
+```kotlin
+result.scoreReasons.forEach { reason ->
+    println("${reason.indicator}: -${reason.penalty}")
 }
 ```
 
@@ -184,6 +216,8 @@ class YourApplication : Application(), FraudMetricListener {
 
     override fun onMetricsGenerated(result: DetectionResult, deviceId: String?) {
         val score = result.deviceScore
+        val riskLevel = result.deviceRiskLevel
+        val reasons = result.scoreReasons
 
         // Envie score, deviceId e indicadores detectados para sua observabilidade.
     }
@@ -204,8 +238,5 @@ As permissões de localização ajudam nos sinais de GPS spoofing e enriquecem o
 
 ## Sugestões de Evolução
 
-- Expor uma configuração de pesos para que cada app ajuste o Device Score ao seu próprio modelo de risco.
-- Incluir uma lista de motivos do score, por exemplo `scoreReasons`, para explicar quais indicadores reduziram a pontuação.
 - Separar severidade técnica de ação de negócio: o SDK calcula risco, e o app decide se bloqueia, alerta ou apenas monitora.
-- Adicionar testes unitários para validar combinações de indicadores e impedir regressões nos pesos do Device Score.
 - Enviar apenas dados necessários para observabilidade, evitando expor localização ou identificadores quando não forem essenciais.

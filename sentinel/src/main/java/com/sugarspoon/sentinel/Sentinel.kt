@@ -36,6 +36,7 @@ object Sentinel {
     private val scope = CoroutineScope(Dispatchers.Default)
     private var enableLogs = false
     private var userId: String? = null
+    private var config: SentinelConfig = SentinelConfig()
     private val _detectionResult = MutableStateFlow(DetectionResult())
     val detectionResult = _detectionResult.asStateFlow()
 
@@ -43,12 +44,19 @@ object Sentinel {
         context: Context,
         environment: Environment = Environment.PROD,
         enableLogs: Boolean = false,
+        config: SentinelConfig = SentinelConfig(),
     ) {
         this.enableLogs = enableLogs
         this.context = context.applicationContext
         this.environment = environment
-        log("Sentinel is already initialized...")
+        this.config = config
+        log("Sentinel is initialized.")
         startMonitoring()
+    }
+
+    fun setConfig(config: SentinelConfig) {
+        this.config = config
+        log("Sentinel config updated.")
     }
 
     fun setUserId(userId: String) {
@@ -96,13 +104,14 @@ object Sentinel {
             null
         }
         
+        val isHookingDetected = checkHooking()
         val rawResult = DetectionResult(
             isDebuggingEnabled = checkDebugging(),
             isEmulated = checkEmulator(),
             isRooted = checkRoot(),
             isProxyEnabled = checkProxy(),
-            isDeviceMasked = checkDeviceMasking(),
-            isHookingDetected = checkHooking(),
+            isDeviceMasked = checkDeviceMasking(isHookingDetected),
+            isHookingDetected = isHookingDetected,
             isAutoClickerDetected = checkAutoClicker(),
             isAppCloned = checkAppCloning(),
             isGpsSpoofing = checkGpsSpoofing(),
@@ -115,30 +124,19 @@ object Sentinel {
             userId = userId
         )
         
-        val finalResult = rawResult.copy(deviceScore = calculateDeviceScore(rawResult))
+        val deviceScore = DeviceScoreCalculator.calculate(rawResult, config.scoreWeights)
+        val finalResult = rawResult.copy(
+            deviceScore = deviceScore.value,
+            deviceRiskLevel = deviceScore.riskLevel,
+            scoreReasons = deviceScore.reasons,
+        )
+        log(
+            "Device score: deviceScore=${finalResult.deviceScore}, " +
+                "deviceRiskLevel=${finalResult.deviceRiskLevel}, " +
+                "scoreReasons=${finalResult.scoreReasons.joinToString { reason -> "${reason.indicator.name}(-${reason.penalty})" }}"
+        )
         log("Cycle results: $finalResult")
         return finalResult
-    }
-
-    private fun calculateDeviceScore(result: DetectionResult): Int {
-        var score = 100
-        if (result.isRooted) score -= 20
-        if (result.isHookingDetected) score -= 20
-        if (result.isDeviceMasked) score -= 15
-        if (result.isEmulated) score -= 15
-        if (result.isVirtualOS) score -= 15
-        if (result.isAppCloned) score -= 10
-        if (result.isSuspiciousReset) score -= 10
-        if (result.isGpsSpoofing) score -= 10
-        if (result.isAutoClickerDetected) score -= 10
-        if (result.isScreenSharing) score -= 5
-        if (result.isDebuggingEnabled) score -= 5
-        if (result.isVpnActive) score -= 5
-        if (result.isProxyEnabled) score -= 5
-        
-        val finalScore = score.coerceAtLeast(0)
-        log("Calculated device score: $finalScore")
-        return finalScore
     }
     
     @RequiresPermission(anyOf = [Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION])
@@ -296,7 +294,7 @@ object Sentinel {
         return isProxy
     }
 
-    private fun checkDeviceMasking(): Boolean {
+    private fun checkDeviceMasking(isHookingDetected: Boolean): Boolean {
         val suspiciousHardware = setOf("goldfish", "ranchu", "generic", "sdk", "emulator")
         val realManufacturers = setOf("samsung", "google", "xiaomi", "oneplus", "oppo", "vivo", "realme", "motorola", "lg", "sony", "huawei")
 
@@ -313,7 +311,7 @@ object Sentinel {
             log("Device masking detected: Claims to be '$manufacturer' but has suspicious hardware/fingerprint '$hardware'/'$fingerprint'.")
         }
 
-        if (!isMasked && checkHooking()) {
+        if (!isMasked && isHookingDetected) {
             log("Device masking suspected: Hooking framework detected, device properties are untrustworthy.")
             isMasked = true
         }
