@@ -1,4 +1,4 @@
-package com.sugarspoon.sentinel.ui.checkout
+package com.sugarspoon.sentinel.ui.checkout.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -18,8 +18,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.sugarspoon.sentinel.ui.checkout.screen.CheckoutPreviewData
+import com.sugarspoon.sentinel.ui.checkout.screen.CheckoutState
+import com.sugarspoon.sentinel.ui.checkout.screen.FraudDecision
+import com.sugarspoon.sentinel.ui.checkout.screen.PaymentMethod
 
 @Composable
 fun CheckoutAction(
@@ -85,4 +90,40 @@ fun CheckoutAction(
             }
         }
     }
+}
+
+@Preview(showBackground = true, backgroundColor = 0xFF000000)
+@Composable
+private fun CheckoutActionReadyPreview() {
+    CheckoutAction(
+        checkoutState = CheckoutState.READY,
+        paymentMethod = PaymentMethod.PIX,
+        decision = CheckoutPreviewData.safeDecision,
+        onPay = {},
+        onReset = {}
+    )
+}
+
+@Preview(showBackground = true, backgroundColor = 0xFF000000)
+@Composable
+private fun CheckoutActionChallengePreview() {
+    CheckoutAction(
+        checkoutState = CheckoutState.CHALLENGE_REQUIRED,
+        paymentMethod = PaymentMethod.CARD,
+        decision = CheckoutPreviewData.riskyDecision,
+        onPay = {},
+        onReset = {}
+    )
+}
+
+@Preview(showBackground = true, backgroundColor = 0xFF000000)
+@Composable
+private fun CheckoutActionApprovedPreview() {
+    CheckoutAction(
+        checkoutState = CheckoutState.APPROVED,
+        paymentMethod = PaymentMethod.PIX,
+        decision = CheckoutPreviewData.safeDecision,
+        onPay = {},
+        onReset = {}
+    )
 }

@@ -1,4 +1,4 @@
-package com.sugarspoon.sentinel.ui.checkout
+package com.sugarspoon.sentinel.ui.checkout.screen
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -14,7 +14,14 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.sugarspoon.sentinel.ui.checkout.components.ChallengeDialog
+import com.sugarspoon.sentinel.ui.checkout.components.CheckoutAction
+import com.sugarspoon.sentinel.ui.checkout.components.PaymentMethodSelector
+import com.sugarspoon.sentinel.ui.checkout.components.ProductSummary
+import com.sugarspoon.sentinel.ui.checkout.components.SecurityPreview
+import com.sugarspoon.sentinel.ui.checkout.components.toRiskColor
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -76,4 +83,32 @@ fun CheckoutScreen(
             )
         }
     }
+}
+
+@Preview(showBackground = true, backgroundColor = 0xFF000000)
+@Composable
+private fun CheckoutScreenReadyPreview() {
+    CheckoutScreen(
+        uiState = CheckoutPreviewData.safeUiState,
+        onPaymentMethodSelected = {},
+        onPayClicked = {},
+        onResetCheckout = {},
+        onChallengeAnswerChanged = {},
+        onChallengeDismissed = {},
+        onChallengeConfirmed = {}
+    )
+}
+
+@Preview(showBackground = true, backgroundColor = 0xFF000000)
+@Composable
+private fun CheckoutScreenChallengePreview() {
+    CheckoutScreen(
+        uiState = CheckoutPreviewData.challengeUiState,
+        onPaymentMethodSelected = {},
+        onPayClicked = {},
+        onResetCheckout = {},
+        onChallengeAnswerChanged = {},
+        onChallengeDismissed = {},
+        onChallengeConfirmed = {}
+    )
 }

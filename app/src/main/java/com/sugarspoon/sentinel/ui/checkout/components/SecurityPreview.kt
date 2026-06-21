@@ -1,4 +1,4 @@
-package com.sugarspoon.sentinel.ui.checkout
+package com.sugarspoon.sentinel.ui.checkout.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -17,9 +17,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sugarspoon.sentinel.DetectionResult
+import com.sugarspoon.sentinel.ui.checkout.screen.CheckoutPreviewData
+import com.sugarspoon.sentinel.ui.checkout.screen.FraudDecision
 
 @Composable
 fun SecurityPreview(
@@ -80,4 +83,32 @@ fun SecurityPreview(
             }
         }
     }
+}
+
+fun Int.toRiskColor(): Color {
+    return when {
+        this <= 40 -> Color.Red
+        this <= 75 -> Color(0xFFFFC107)
+        else -> Color(0xFF00E676)
+    }
+}
+
+@Preview(showBackground = true, backgroundColor = 0xFF000000)
+@Composable
+private fun SecurityPreviewSafePreview() {
+    SecurityPreview(
+        result = CheckoutPreviewData.safeResult,
+        decision = CheckoutPreviewData.safeDecision,
+        riskColor = CheckoutPreviewData.safeResult.deviceScore.toRiskColor()
+    )
+}
+
+@Preview(showBackground = true, backgroundColor = 0xFF000000)
+@Composable
+private fun SecurityPreviewRiskyPreview() {
+    SecurityPreview(
+        result = CheckoutPreviewData.riskyResult,
+        decision = CheckoutPreviewData.riskyDecision,
+        riskColor = CheckoutPreviewData.riskyResult.deviceScore.toRiskColor()
+    )
 }

@@ -1,4 +1,4 @@
-package com.sugarspoon.sentinel.ui.checkout
+package com.sugarspoon.sentinel.ui.checkout.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -12,8 +12,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.sugarspoon.sentinel.DetectionResult
+import com.sugarspoon.sentinel.ui.checkout.screen.CheckoutPreviewData
+import com.sugarspoon.sentinel.ui.checkout.screen.FraudDecision
 
 @Composable
 fun ChallengeDialog(
@@ -64,5 +67,18 @@ fun ChallengeDialog(
                 Text("Cancelar compra")
             }
         }
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun ChallengeDialogPreview() {
+    ChallengeDialog(
+        result = CheckoutPreviewData.riskyResult,
+        decision = CheckoutPreviewData.riskyDecision,
+        answer = "1234",
+        onAnswerChange = {},
+        onDismiss = {},
+        onConfirm = {}
     )
 }

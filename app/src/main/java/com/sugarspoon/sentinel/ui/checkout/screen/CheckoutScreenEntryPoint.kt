@@ -1,4 +1,4 @@
-package com.sugarspoon.sentinel.ui.checkout
+package com.sugarspoon.sentinel.ui.checkout.screen
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue

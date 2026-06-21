@@ -1,4 +1,4 @@
-package com.sugarspoon.sentinel.ui.checkout
+package com.sugarspoon.sentinel.ui.checkout.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -11,8 +11,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.sugarspoon.sentinel.ui.checkout.screen.PaymentMethod
+import com.sugarspoon.sentinel.ui.shared.SelectableOptionButton
 
 @Composable
 fun PaymentMethodSelector(
@@ -31,13 +34,13 @@ fun PaymentMethodSelector(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            PaymentOptionButton(
+            SelectableOptionButton(
                 label = "Pix",
                 isSelected = selected == PaymentMethod.PIX,
                 modifier = Modifier.weight(1f),
                 onClick = { onSelected(PaymentMethod.PIX) }
             )
-            PaymentOptionButton(
+            SelectableOptionButton(
                 label = "Cartao",
                 isSelected = selected == PaymentMethod.CARD,
                 modifier = Modifier.weight(1f),
@@ -45,4 +48,13 @@ fun PaymentMethodSelector(
             )
         }
     }
+}
+
+@Preview(showBackground = true, backgroundColor = 0xFF000000)
+@Composable
+private fun PaymentMethodSelectorPreview() {
+    PaymentMethodSelector(
+        selected = PaymentMethod.PIX,
+        onSelected = {}
+    )
 }

@@ -1,4 +1,4 @@
-package com.sugarspoon.sentinel.ui.checkout
+package com.sugarspoon.sentinel.ui.checkout.screen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
